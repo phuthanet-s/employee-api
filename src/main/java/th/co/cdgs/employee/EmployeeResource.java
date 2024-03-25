@@ -2,8 +2,13 @@ package th.co.cdgs.employee;
 
 import java.util.List;
 
+import org.eclipse.microprofile.config.Config;
+
+import io.quarkus.runtime.configuration.ProfileManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
@@ -31,6 +36,9 @@ public class EmployeeResource {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    Config config;
 
     @GET
     public List<Employee> get() {
@@ -79,6 +87,16 @@ public class EmployeeResource {
             query.setParameter("department", condition.getDepartment());
         }
         return query.getResultList();
+    }
+
+    @GET
+    @Path("getIpAddress")
+    public JsonObject getIpAddress() {
+        String ip = getHostname();
+        JsonObject responseJson = Json.createObjectBuilder()
+                .add("ipAddress", ip)
+                .build();
+        return responseJson;
     }
 
     @GET
@@ -162,5 +180,21 @@ public class EmployeeResource {
             entityManager.remove(entity);
         }
         return Response.ok().build();
+    }
+
+    public String getHostname() {
+        String hostname = config.getValue("quarkus.datasource.jdbc.url", String.class);
+        extractIpAddress(hostname);
+        return extractIpAddress(hostname);
+    }
+
+    public static String extractIpAddress(String jdbcUrl) {
+        String ipWithPort = jdbcUrl.replace("jdbc:db2://", "");
+        int colonIndex = ipWithPort.indexOf(':');
+        if (colonIndex != -1) {
+            return ipWithPort.substring(0, colonIndex);
+        } else {
+            return ipWithPort;
+        }
     }
 }
