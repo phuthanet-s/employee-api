@@ -189,12 +189,14 @@ public class EmployeeResource {
     }
 
     public static String extractIpAddress(String jdbcUrl) {
-        String ipWithPort = jdbcUrl.replace("jdbc:db2://", "");
-        int colonIndex = ipWithPort.indexOf(':');
-        if (colonIndex != -1) {
-            return ipWithPort.substring(0, colonIndex);
-        } else {
-            return ipWithPort;
-        }
+        String urlWithoutPrefix = jdbcUrl.substring("jdbc:db2://".length());
+        String[] parts = urlWithoutPrefix.split("/");
+        String ipWithPort = parts[0];
+        String dbName = parts[1];
+        String[] dbNameParts = dbName.split(":");
+        String dbNameWithoutSchema = dbNameParts[0];
+        String[] ipParts = ipWithPort.split(":");
+        String ipWithoutPort = ipParts[0];
+        return ipWithoutPort + "/" + dbNameWithoutSchema;
     }
 }
