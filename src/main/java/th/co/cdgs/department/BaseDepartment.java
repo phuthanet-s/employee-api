@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Version;
 
 @MappedSuperclass
 public class BaseDepartment {
@@ -16,6 +17,9 @@ public class BaseDepartment {
 
     @Column(length = 100)
     private String name;
+
+    @Version
+    private Integer version;
 
     public Integer getCode() {
         return code;
@@ -31,6 +35,14 @@ public class BaseDepartment {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
 }
