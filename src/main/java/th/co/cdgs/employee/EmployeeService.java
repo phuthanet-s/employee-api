@@ -3,6 +3,7 @@ package th.co.cdgs.employee;
 import java.util.List;
 
 import io.quarkus.logging.Log;
+import io.quarkus.runtime.configuration.ProfileManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
